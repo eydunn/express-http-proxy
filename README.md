@@ -1,4 +1,5 @@
-# express-http-proxy [![NPM version](https://badge.fury.io/js/express-http-proxy.svg)](http://badge.fury.io/js/express-http-proxy) [![Build Status](https://travis-ci.org/villadora/express-http-proxy.svg?branch=master)](https://travis-ci.org/villadora/express-http-proxy) [![Dependency Status](https://gemnasium.com/villadora/express-http-proxy.svg)](https://gemnasium.com/villadora/express-http-proxy)
+# express-http-proxy [![NPM version](https://badge.fury.io/js/express-http-proxy.svg)](http://badge.fury.io/js/express-http-proxy) [![Build Status](https://travis-ci.org/villadora/express-http-proxy.svg?branch=master)](https://travis-ci.org/villadora/express-http-proxy) 
+
 
 Express middleware to proxy request to another host and pass response back to original caller.
 
@@ -71,6 +72,18 @@ function selectProxyHost() {
 }
 
 app.use('/', proxy(selectProxyHost));
+```
+### Middleware mixing
+
+If you use 'https://www.npmjs.com/package/body-parser' you should declare it AFTER the proxy configuration, otherwise  original 'POST' body could be modified and not proxied correctly.
+
+```
+
+app.use('/proxy', 'http://foo.bar.com')
+
+// Declare use of body-parser AFTER the use of proxy
+app.use(bodyParser.foo(bar))
+app.use('/api', ...)
 ```
 
 ### Options
@@ -243,6 +256,8 @@ first request.
 
 
 ### userResHeaderDecorator
+
+When a `userResHeaderDecorator` is defined, the return of this method will replace (rather than be merged on to) the headers for `userRes`.
 
 ```js
 app.use('/proxy', proxy('www.google.com', {
@@ -573,6 +588,8 @@ app.use('/', proxy('internalhost.example.com', {
 
 | Release | Notes |
 | --- | --- |
+| 1.6.2 | Update node.js versions used by ci. |
+| 1.6.1 | Minor bug fixes and documentation. |
 | 1.6.0 | Do gzip and gunzip aysyncronously.   Test and documentation improvements, dependency updates. |
 | 1.5.1 | Fixes bug in stringifying debug messages. |
 | 1.5.0 | Fixes bug in `filter` signature.  Fix bug in skipToNextHandler, add expressHttpProxy value to user res when skipped.  Add tests for host as ip address. |
